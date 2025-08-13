@@ -139,6 +139,22 @@
     .stat-number{font-size:24px;font-weight:800;color:var(--accent);margin-bottom:8px}
     .stat-label{color:var(--muted);font-size:14px}
 
+    /* Payment Modal Styles */
+    .payment-section{background:var(--glass-2);padding:24px;border-radius:12px;border:1px solid var(--border);margin:20px 0}
+    .payment-title{color:var(--accent);font-size:18px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .order-summary{background:var(--card);padding:20px;border-radius:12px;border:1px solid var(--border);margin-bottom:20px}
+    .summary-line{display:flex;justify-content:space-between;margin-bottom:8px;color:var(--muted)}
+    .summary-line.total{color:var(--text);font-weight:600;font-size:18px;border-top:1px solid var(--border);padding-top:8px;margin-top:12px}
+    .order-id{color:var(--accent);font-weight:600}
+    .paypal-btn{background:#0070ba;color:white;border:none;padding:16px 24px;border-radius:12px;
+      font-weight:600;cursor:pointer;transition:all 0.3s;width:100%;margin-bottom:16px;
+      display:flex;align-items:center;justify-content:center;gap:8px}
+    .paypal-btn:hover{background:#005ea6;transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,112,186,0.3)}
+    .discord-payment{background:var(--glass);padding:16px;border-radius:12px;border:1px solid var(--border);
+      text-align:center;color:var(--muted);line-height:1.5}
+    .discord-payment a{color:#5865f2;text-decoration:none;font-weight:600}
+    .discord-payment a:hover{text-decoration:underline}
+
     @media(max-width:800px){
       .main-title{font-size:32px}
       h2{font-size:28px}
@@ -210,17 +226,17 @@
         
         <div class="duration-selector">
           <div class="duration-options">
-            <button class="duration-option active" data-duration="week" data-price="19.99">
-              1 Semaine
+            <button class="duration-option active" data-duration="week" data-price="19.99" data-product="valpro">
+              1 Week
             </button>
-            <button class="duration-option" data-duration="month" data-price="45">
-              1 Mois
+            <button class="duration-option" data-duration="month" data-price="45" data-product="valpro">
+              1 Month
             </button>
-            <button class="duration-option" data-duration="lifetime" data-price="120">
-              À Vie
+            <button class="duration-option" data-duration="lifetime" data-price="120" data-product="valpro">
+              LifeTime
             </button>
           </div>
-          <div class="duration-label">Sélectionnez votre durée d'abonnement</div>
+          <div class="duration-label">Select the time duration</div>
         </div>
         
         <div class="buy">
@@ -232,9 +248,31 @@
       <article class="card">
         <div class="tag">2 left</div>
         <h3>Val-purge</h3>
-        <div class="price">19.9€</div>
+        <div class="price" id="valpurge-price">20€</div>
         <p class="features">Best rage cheat ever , undetected and internal.</p>
-        <div class="buy"><button class="btn" onclick="openModal('purchase','Val-purge',19.9, '1 semaine')">Buy</button><button class="secondary" onclick="openModal('details','Val-purge')">more informations</button></div>
+        
+        <div class="duration-selector">
+          <div class="duration-options">
+            <button class="duration-option active" data-duration="3days" data-price="20" data-product="valpurge">
+              3 Days
+            </button>
+            <button class="duration-option" data-duration="week" data-price="40" data-product="valpurge">
+              1 Week
+            </button>
+            <button class="duration-option" data-duration="month" data-price="90" data-product="valpurge">
+              1 Month
+            </button>
+            <button class="duration-option" data-duration="lifetime" data-price="175" data-product="valpurge">
+              LifeTime
+            </button>
+          </div>
+          <div class="duration-label">Select the time duration</div>
+        </div>
+        
+        <div class="buy">
+          <button class="btn" onclick="openModal('purchase','Val-purge', getValPurgePrice(), getValPurgeDuration())">Buy</button>
+          <button class="secondary" onclick="openModal('details','Val-purge')">more informations</button>
+        </div>
       </article>
 
       <article class="card">
@@ -253,8 +291,9 @@
       <section class="about-section">
         <h2 class="section-title">Our History</h2>
         <p class="story-text">
-          Radiant Privacy was created in <span class="highlight">2024</span>"We are two french young students in engineering , tired of buy shit cheat and getting ban we decided to create our own undetected cheat , we are using them for 1 year without ban so now we want to share them with you guys that's all you need to know from us ! Any question ? Join the discord and we will answer to you without any problem
-
+          Radiant Privacy was created in <span class="highlight">2024</span> "We are two french young students in engineering , tired of buy shit cheat and getting ban we decided to create our own undetected cheat , we are using them for 1 year without ban so now we want to share them with you guys that's all you need to know from us ! Any question ? Join the discord and we will answer to you without any problem
+        </p>
+      </section>
 
       <section class="about-section">
         <h2 class="section-title">Our Statistics</h2>
@@ -286,11 +325,9 @@
         </div>
       </section>
 
-        
-        <div style="text-align:center;margin-top:32px">
-          <button class="btn" onclick="showPage('home')">Take a look at our product</button>
-        </div>
-      </section>
+      <div style="text-align:center;margin-top:32px">
+        <button class="btn" onclick="showPage('home')">Take a look at our product</button>
+      </div>
     </main>
   </div>
 
@@ -315,7 +352,7 @@
         </div>
         <div><button class="close" onclick="closeModal()">✕</button></div>
       </div>
-      <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end">
+      <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end" id="modal-actions">
         <button class="secondary" onclick="closeModal()">Fermer</button>
         <button class="btn" id="modal-buy">Commander</button>
       </div>
@@ -323,38 +360,69 @@
   </div>
 
   <script>
-    // Gestion de la sélection de durée pour Val-pro
-    document.querySelectorAll('.duration-option').forEach(option => {
-      option.addEventListener('click', function() {
-        // Retirer la classe active de tous les boutons
-        document.querySelectorAll('.duration-option').forEach(btn => {
-          btn.classList.remove('active');
+    // Gestion de la sélection de durée pour tous les produits
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.duration-option').forEach(option => {
+        option.addEventListener('click', function() {
+          const product = this.getAttribute('data-product');
+          
+          // Retirer la classe active de tous les boutons du même produit
+          document.querySelectorAll(`.duration-option[data-product="${product}"]`).forEach(btn => {
+            btn.classList.remove('active');
+          });
+          
+          // Ajouter la classe active au bouton cliqué
+          this.classList.add('active');
+          
+          // Mettre à jour le prix selon le produit
+          const price = this.getAttribute('data-price');
+          if (product === 'valpro') {
+            document.getElementById('valpro-price').textContent = price + '€';
+          } else if (product === 'valpurge') {
+            document.getElementById('valpurge-price').textContent = price + '€';
+          }
         });
-        
-        // Ajouter la classe active au bouton cliqué
-        this.classList.add('active');
-        
-        // Mettre à jour le prix
-        const price = this.getAttribute('data-price');
-        document.getElementById('valpro-price').textContent = price + '€';
       });
     });
 
-    // Fonctions pour récupérer le prix et la durée sélectionnés
+    // Fonctions pour récupérer le prix et la durée sélectionnés pour Val-Pro
     function getValProPrice() {
-      const activeOption = document.querySelector('.duration-option.active');
+      const activeOption = document.querySelector('.duration-option[data-product="valpro"].active');
       return parseFloat(activeOption.getAttribute('data-price'));
     }
 
     function getValProDuration() {
-      const activeOption = document.querySelector('.duration-option.active');
+      const activeOption = document.querySelector('.duration-option[data-product="valpro"].active');
       const duration = activeOption.getAttribute('data-duration');
       const durationMap = {
-        'week': '1 semaine',
-        'month': '1 mois',
-        'lifetime': 'à vie'
+        'week': '1 Week',
+        'month': '1 Month',
+        'lifetime': 'LifeTime'
       };
-      return durationMap[duration] || '1 semaine';
+      return durationMap[duration] || '1 Week';
+    }
+
+    // Fonctions pour récupérer le prix et la durée sélectionnés pour Val-Purge
+    function getValPurgePrice() {
+      const activeOption = document.querySelector('.duration-option[data-product="valpurge"].active');
+      return parseFloat(activeOption.getAttribute('data-price'));
+    }
+
+    function getValPurgeDuration() {
+      const activeOption = document.querySelector('.duration-option[data-product="valpurge"].active');
+      const duration = activeOption.getAttribute('data-duration');
+      const durationMap = {
+        '3days': '3 Days',
+        'week': '1 Week',
+        'month': '1 Month',
+        'lifetime': 'LifeTime'
+      };
+      return durationMap[duration] || '3 jours';
+    }
+
+    // Générer un ID de commande aléatoire
+    function generateOrderId() {
+      return 'RP-' + Math.random().toString(36).substr(2, 9).toUpperCase();
     }
 
     // Navigation entre les pages
@@ -421,7 +489,7 @@
           ]
         }
       },
-              'Permanent spoof': {
+      'Permanent spoof': {
         description: 'HWID unban solution - Permanent unbanning',
         features: {
           'Basic Features': [
@@ -452,11 +520,65 @@
     function openModal(type, productName, price, duration){
       document.getElementById('modal-title').textContent = productName;
       const body = document.getElementById('modal-body');
-      const buyBtn = document.getElementById('modal-buy');
+      const actionsDiv = document.getElementById('modal-actions');
       
       if(type === 'purchase'){
-        body.innerHTML = `Prix: ${price}€<br>Durée: ${duration}<br><br>Plateforme de démonstration — aucune transaction réelle configurée.`;
-        buyBtn.style.display = 'inline-block';
+        const orderId = generateOrderId();
+        const currentDate = new Date().toLocaleDateString('fr-FR');
+        
+        body.innerHTML = `
+          <div class="order-summary">
+            <h4 style="color:var(--accent);margin:0 0 16px;font-size:16px;">📋 Récapitulatif de la commande</h4>
+            <div class="summary-line">
+              <span>ID de commande:</span>
+              <span class="order-id">${orderId}</span>
+            </div>
+            <div class="summary-line">
+              <span>Date:</span>
+              <span>${currentDate}</span>
+            </div>
+            <div class="summary-line">
+              <span>Produit:</span>
+              <span>${productName}</span>
+            </div>
+            <div class="summary-line">
+              <span>Durée:</span>
+              <span>${duration}</span>
+            </div>
+            <div class="summary-line total">
+              <span>Total à payer:</span>
+              <span>${price}€</span>
+            </div>
+          </div>
+          
+          <div class="payment-section">
+            <h4 class="payment-title">
+              💳 Paiement PayPal
+            </h4>
+            <button class="paypal-btn" onclick="processPayPalPayment('${productName}', ${price}, '${orderId}')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.149-.895c-.362-1.44-1.411-2.344-3.298-2.344H9.83c-.524 0-.968.382-1.05.9L6.25 15.723h2.19c4.298 0 7.664-1.747 8.647-6.797.03-.149.054-.294.077-.437.292-1.867-.002-3.137-1.012-4.287z"/>
+              </svg>
+              Payer avec PayPal (${price}€)
+            </button>
+            
+            <div class="discord-payment">
+              <h5 style="color:var(--accent);margin:0 0 12px;">💬 Autres options de paiement</h5>
+              <p style="margin:0;">
+                <a href="https://discord.gg/njCpsQrJxr" target="_blank">Créez un ticket Discord</a> 
+                pour plus d'options de paiement<br>
+                (Crypto, Cartes prépayées, Virement, etc.)
+              </p>
+              <p style="margin:8px 0 0;font-size:13px;color:var(--muted);">
+                Mentionnez votre ID de commande: <strong>${orderId}</strong>
+              </p>
+            </div>
+          </div>
+        `;
+        
+        actionsDiv.innerHTML = `
+          <button class="secondary" onclick="closeModal()">Annuler</button>
+        `;
       } else {
         const product = productDetails[productName];
         let content = `<p style="margin-bottom:16px;font-style:italic">${product.description}</p>`;
@@ -473,11 +595,23 @@
         });
         
         body.innerHTML = content;
-        buyBtn.style.display = 'none';
+        
+        actionsDiv.innerHTML = `
+          <button class="secondary" onclick="closeModal()">Fermer</button>
+          <button class="btn" onclick="openModal('purchase','${productName}', ${productName === 'Val-Pro' ? 'getValProPrice()' : price}, '${duration}')">Acheter maintenant</button>
+        `;
       }
       
       document.getElementById('modal').classList.add('open');
       document.getElementById('modal').setAttribute('aria-hidden','false');
+    }
+
+    function processPayPalPayment(productName, price, orderId) {
+      // Simulation du processus PayPal
+      alert(`🚀 Redirection vers PayPal...\n\nProduit: ${productName}\nMontant: ${price}€\nCommande: ${orderId}\n\nNote: Ceci est une démonstration. Dans un environnement réel, vous seriez redirigé vers PayPal pour finaliser le paiement.`);
+      
+      // Simuler une redirection PayPal (remplacez par votre vraie URL PayPal)
+      // window.open(`https://www.paypal.com/checkout?amount=${price}&item=${encodeURIComponent(productName)}&custom=${orderId}`, '_blank');
     }
 
     function closeModal(){

@@ -65,6 +65,18 @@
       border-radius:10px;color:var(--muted);cursor:pointer;transition:all 0.2s}
     .secondary:hover{border-color:var(--accent);color:var(--accent)}
 
+    /* Duration selector styles */
+    .duration-selector{margin:16px 0 20px}
+    .duration-options{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+    .duration-option{background:transparent;border:2px solid var(--border);padding:8px 12px;
+      border-radius:10px;color:var(--muted);cursor:pointer;transition:all 0.3s;
+      font-size:13px;font-weight:600;flex:1;text-align:center;min-width:60px}
+    .duration-option:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+    .duration-option.active{background:linear-gradient(135deg,var(--accent),var(--secondary));
+      border-color:var(--accent);color:white;transform:translateY(-2px);
+      box-shadow:0 4px 16px rgba(139,92,246,0.3)}
+    .duration-label{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+
     footer{padding:32px;color:var(--muted);font-size:13px;border-top:1px solid var(--border);
       text-align:center;background:var(--card)}
 
@@ -141,6 +153,7 @@
       .timeline-date{min-width:auto}
       .team-grid{grid-template-columns:1fr}
       .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .duration-options{flex-direction:column}
     }
   </style>
 </head>
@@ -192,25 +205,82 @@
       <article class="card">
         <div class="tag">4 left</div>
         <h3>Val-pro</h3>
-        <div class="price">19.99€</div>
+        <div class="price" id="valpro-price">19.99€</div>
         <p class="features">Best external valorant cheat and the most undetected one.</p>
-        <div class="buy"><button class="btn" onclick="openModal('purchase','Val-Pro',19.99)">Buy</button><button class="secondary" onclick="openModal('details','Val-Pro')">more informations</button></div>
+        
+        <div class="duration-selector">
+          <div class="duration-options">
+            <button class="duration-option active" data-duration="week" data-price="19.99">
+              1 Semaine
+            </button>
+            <button class="duration-option" data-duration="month" data-price="45">
+              1 Mois
+            </button>
+            <button class="duration-option" data-duration="lifetime" data-price="120">
+              À Vie
+            </button>
+          </div>
+          <div class="duration-label">Sélectionnez votre durée d'abonnement</div>
+        </div>
+        
+        <div class="buy">
+          <button class="btn" onclick="openModal('purchase','Val-Pro', getValProPrice(), getValProDuration())">Buy</button>
+          <button class="secondary" onclick="openModal('details','Val-Pro')">more informations</button>
+        </div>
       </article>
 
       <article class="card">
         <div class="tag">2 left</div>
         <h3>Val-purge</h3>
-        <div class="price">19.9€</div>
+        <div class="price" id="valpurge-price">19.99€</div>
         <p class="features">Best rage cheat ever , undetected and internal.</p>
-        <div class="buy"><button class="btn" onclick="openModal('purchase','Val-purge',19.9)">Buy</button><button class="secondary" onclick="openModal('details','Val-purge')">more informations</button></div>
+        
+        <div class="duration-selector">
+          <div class="duration-options">
+            <button class="duration-option valpurge-option active" data-duration="3days" data-price="19.99">
+              3 Jours
+            </button>
+            <button class="duration-option valpurge-option" data-duration="week" data-price="39.99">
+              1 Semaine
+            </button>
+            <button class="duration-option valpurge-option" data-duration="month" data-price="84.99">
+              1 Mois
+            </button>
+            <button class="duration-option valpurge-option" data-duration="lifetime" data-price="179.99">
+              À Vie
+            </button>
+          </div>
+          <div class="duration-label">Sélectionnez votre durée d'abonnement</div>
+        </div>
+        
+        <div class="buy">
+          <button class="btn" onclick="openModal('purchase','Val-purge', getValPurgePrice(), getValPurgeDuration())">Buy</button>
+          <button class="secondary" onclick="openModal('details','Val-purge')">more informations</button>
+        </div>
       </article>
 
       <article class="card">
         <div class="tag">13 left</div>
         <h3>Permanent spoof</h3>
-        <div class="price">17€</div>
+        <div class="price" id="permanentspoof-price">20€</div>
         <p class="features">HWID unban in just a few steps!!.</p>
-        <div class="buy"><button class="btn" onclick="openModal('purchase','Permanent spoof',17)">Buy</button><button class="secondary" onclick="openModal('details','Permanent spoof')">more informations</button></div>
+        
+        <div class="duration-selector">
+          <div class="duration-options">
+            <button class="duration-option permanentspoof-option active" data-duration="onetime" data-price="20">
+              One Time
+            </button>
+            <button class="duration-option permanentspoof-option" data-duration="lifetime" data-price="50">
+              Life Time
+            </button>
+          </div>
+          <div class="duration-label">Sélectionnez votre option d'achat</div>
+        </div>
+        
+        <div class="buy">
+          <button class="btn" onclick="openModal('purchase','Permanent spoof', getPermanentSpoofPrice(), getPermanentSpoofDuration())">Buy</button>
+          <button class="secondary" onclick="openModal('details','Permanent spoof')">more informations</button>
+        </div>
       </article>
     </main>
   </div>
@@ -291,6 +361,108 @@
   </div>
 
   <script>
+    // Gestion de la sélection de durée pour Val-pro
+    document.querySelectorAll('.duration-option:not(.valpurge-option):not(.permanentspoof-option)').forEach(option => {
+      option.addEventListener('click', function() {
+        // Retirer la classe active de tous les boutons Val-pro
+        document.querySelectorAll('.duration-option:not(.valpurge-option):not(.permanentspoof-option)').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Ajouter la classe active au bouton cliqué
+        this.classList.add('active');
+        
+        // Mettre à jour le prix
+        const price = this.getAttribute('data-price');
+        document.getElementById('valpro-price').textContent = price + '€';
+      });
+    });
+
+    // Gestion de la sélection de durée pour Val-purge
+    document.querySelectorAll('.valpurge-option').forEach(option => {
+      option.addEventListener('click', function() {
+        // Retirer la classe active de tous les boutons Val-purge
+        document.querySelectorAll('.valpurge-option').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Ajouter la classe active au bouton cliqué
+        this.classList.add('active');
+        
+        // Mettre à jour le prix
+        const price = this.getAttribute('data-price');
+        document.getElementById('valpurge-price').textContent = price + '€';
+      });
+    });
+
+    // Gestion de la sélection de durée pour Permanent spoof
+    document.querySelectorAll('.permanentspoof-option').forEach(option => {
+      option.addEventListener('click', function() {
+        // Retirer la classe active de tous les boutons Permanent spoof
+        document.querySelectorAll('.permanentspoof-option').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Ajouter la classe active au bouton cliqué
+        this.classList.add('active');
+        
+        // Mettre à jour le prix
+        const price = this.getAttribute('data-price');
+        document.getElementById('permanentspoof-price').textContent = price + '€';
+      });
+    });
+
+    // Fonctions pour récupérer le prix et la durée sélectionnés pour Val-pro
+    function getValProPrice() {
+      const activeOption = document.querySelector('.duration-option:not(.valpurge-option):not(.permanentspoof-option).active');
+      return parseFloat(activeOption.getAttribute('data-price'));
+    }
+
+    function getValProDuration() {
+      const activeOption = document.querySelector('.duration-option:not(.valpurge-option):not(.permanentspoof-option).active');
+      const duration = activeOption.getAttribute('data-duration');
+      const durationMap = {
+        'week': '1 semaine',
+        'month': '1 mois',
+        'lifetime': 'à vie'
+      };
+      return durationMap[duration] || '1 semaine';
+    }
+
+    // Fonctions pour récupérer le prix et la durée sélectionnés pour Val-purge
+    function getValPurgePrice() {
+      const activeOption = document.querySelector('.valpurge-option.active');
+      return parseFloat(activeOption.getAttribute('data-price'));
+    }
+
+    function getValPurgeDuration() {
+      const activeOption = document.querySelector('.valpurge-option.active');
+      const duration = activeOption.getAttribute('data-duration');
+      const durationMap = {
+        '3days': '3 jours',
+        'week': '1 semaine',
+        'month': '1 mois',
+        'lifetime': 'à vie'
+      };
+      return durationMap[duration] || '3 jours';
+    }
+
+    // Fonctions pour récupérer le prix et la durée sélectionnés pour Permanent spoof
+    function getPermanentSpoofPrice() {
+      const activeOption = document.querySelector('.permanentspoof-option.active');
+      return parseFloat(activeOption.getAttribute('data-price'));
+    }
+
+    function getPermanentSpoofDuration() {
+      const activeOption = document.querySelector('.permanentspoof-option.active');
+      const duration = activeOption.getAttribute('data-duration');
+      const durationMap = {
+        'onetime': 'achat unique',
+        'lifetime': 'accès à vie'
+      };
+      return durationMap[duration] || 'achat unique';
+    }
+
     // Navigation entre les pages
     function showPage(pageId) {
       // Cacher toutes les pages
@@ -383,13 +555,13 @@
       }
     };
 
-    function openModal(type, productName, price){
+    function openModal(type, productName, price, duration){
       document.getElementById('modal-title').textContent = productName;
       const body = document.getElementById('modal-body');
       const buyBtn = document.getElementById('modal-buy');
       
       if(type === 'purchase'){
-        body.innerHTML = `Prix: ${price}€<br><br>Plateforme de démonstration — aucune transaction réelle configurée.`;
+        body.innerHTML = `Prix: ${price}€<br>Durée: ${duration}<br><br>Plateforme de démonstration — aucune transaction réelle configurée.`;
         buyBtn.style.display = 'inline-block';
       } else {
         const product = productDetails[productName];
